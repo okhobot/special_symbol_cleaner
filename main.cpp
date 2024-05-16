@@ -112,16 +112,33 @@ int main()
 
     SSC ssc;
     std::string path;
-    getline(std::cin,path);
-    if(path=="setup")
-        ssc.setup();
-    else if(path=="delete")
-        ssc.delete_from_registry();
-    else
+    bool run=true;
+    while(run)
     {
-        ssc.check_path(path);
-        ssc.read_folder(path);
+        getline(std::cin,path);
+        run=(path=="setup"||path=="delete"||path=="help");
+        if(path=="setup")
+            ssc.setup();
+        else if(path=="delete")
+            ssc.delete_from_registry();
+        else if(path=="help")
+        {
+            const char* msg =
+                "Usage: myarchiver.exe [args]: \n"
+                "|\thelp   THE ALL MIGHTY HELP\n"
+                "|\tsetup   Setup the program to the registry\n"
+                "|\tdelete Uninstall the program from the registry\n"
+                ;
+            std::cout<<msg<<std::endl;
+        }
+        else
+        {
+            ssc.check_path(path);
+            ssc.read_folder(path);
+        }
+        std::cout<<"done"<<std::endl<<std::endl;
     }
+
 
     return 0;
 }
