@@ -85,16 +85,17 @@ public:
 
         dpdf = opendir((start_path+filename).c_str());
         std::cout<<(start_path+filename)<<std::endl;
+
         if (dpdf != NULL)
         {
             for (int i=0; epdf = readdir(dpdf); i++)
             {
                 if(i>=2)
                 {
-                    read_folder(start_path,filename+epdf->d_name+"/");
                     if ( rename((start_path+filename+epdf->d_name).c_str(),(start_path+filename+myreplace(epdf->d_name,"—","-")).c_str() ) == 0 &&debug )
                         std::cout << epdf->d_name<<std::endl;
                     else if(debug)std::cout <<"error: "<< epdf->d_name<<std::endl;
+                    read_folder(start_path,filename+myreplace(epdf->d_name,"—","-")+"/");
                 }
 
             }
@@ -113,6 +114,7 @@ int main()
     SSC ssc;
     std::string path;
     bool run=true;
+
     while(run)
     {
         getline(std::cin,path);
