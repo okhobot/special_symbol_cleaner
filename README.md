@@ -1,3 +1,5 @@
 # special_symbol_cleaner
 
-replaces "—" with "-" in the names of folders and files in the directory
+replaces all characters that are not in the file "dictionary.txt " on "-"
+
+*has the help command*

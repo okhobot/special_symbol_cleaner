@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #define  _WIN32_WINNT  0x0600
 #include <Windows.h>
 #define debug 1
@@ -6,7 +7,17 @@
 
 class SSC
 {
+    std::string dict;
 public:
+
+    SSC()
+    {
+        std::ifstream dict_data(myreplace(get_exe_path(),"special_symbol_cleaner.exe","")+"dictionary.txt");
+        std::getline(dict_data,dict);
+        dict_data.close();
+        //std::cout<<dict<<std::endl;
+    }
+
     std::string myreplace(std::string s, std::string from, std::string to)
     {
         size_t pos=s.find(from);
@@ -18,6 +29,19 @@ public:
         }
         return s;
     }
+
+    std::string rename_dir(std::string name)
+    {
+        std::string res_name="";
+        for(int i=0;i<name.size();i++)
+            if(dict.find(name[i])!=std::string::npos)
+                res_name+=name[i];
+            else res_name+='-';
+
+        return res_name;
+    }
+
+
     void check_path(std::string &path)
     {
         path=myreplace(path,"\\","/");
@@ -92,24 +116,23 @@ public:
             {
                 if(i>=2)
                 {
-                    if ( rename((start_path+filename+epdf->d_name).c_str(),(start_path+filename+myreplace(epdf->d_name,"—","-")).c_str() ) == 0 &&debug )
+                    if ( rename((start_path+filename+epdf->d_name).c_str(),(start_path+filename+rename_dir(epdf->d_name)).c_str() ) == 0 &&debug )
                         std::cout << epdf->d_name<<std::endl;
                     else if(debug)std::cout <<"error: "<< epdf->d_name<<std::endl;
-                    read_folder(start_path,filename+myreplace(epdf->d_name,"—","-")+"/");
+                    read_folder(start_path,filename+rename_dir(epdf->d_name)+"/");
                 }
 
             }
         }
-        else std::cout<<"directory is not opened"<<std::endl;
+        //else std::cout<<"directory is not opened"<<std::endl;
         closedir(dpdf);
     }
 };
 int main()
 {
-    setlocale(1251,"Russian");
+    setlocale(1251,NULL);
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
-
 
     SSC ssc;
     std::string path;
@@ -130,6 +153,7 @@ int main()
                 "|\thelp   THE ALL MIGHTY HELP\n"
                 "|\tsetup   Setup the program to the registry\n"
                 "|\tdelete Uninstall the program from the registry\n"
+                "|\tpath Replaces all characters that are not in the file \"dictionary.txt \" on \"-\"\n"
                 ;
             std::cout<<msg<<std::endl;
         }
@@ -140,7 +164,6 @@ int main()
         }
         std::cout<<"done"<<std::endl<<std::endl;
     }
-
 
     return 0;
 }
