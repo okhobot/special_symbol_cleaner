@@ -8,6 +8,7 @@
 class SSC
 {
     std::string dict;
+    std::ofstream errors_logs;
 public:
 
     SSC()
@@ -16,6 +17,14 @@ public:
         std::getline(dict_data,dict);
         dict_data.close();
         //std::cout<<dict<<std::endl;
+
+        errors_logs.open("errors_logs.txt");
+    }
+
+    ~SSC()
+    {
+        dict.clear();
+        errors_logs.close();
     }
 
     std::string myreplace(std::string s, std::string from, std::string to)
@@ -35,7 +44,10 @@ public:
         std::string res_name="";
         for(int i=0;i<name.size();i++)
             if(dict.find(name[i])!=std::string::npos)
-                res_name+=name[i];
+                {
+                    res_name+=name[i];
+                    std::cout<<name[i]<<" "<<dict[dict.find(name[i])]<<std::endl;
+                }
             else res_name+='-';
 
         return res_name;
@@ -118,7 +130,11 @@ public:
                 {
                     if ( rename((start_path+filename+epdf->d_name).c_str(),(start_path+filename+rename_dir(epdf->d_name)).c_str() ) == 0 &&debug )
                         std::cout << epdf->d_name<<std::endl;
-                    else if(debug)std::cout <<"error: "<< epdf->d_name<<std::endl;
+                    else if(debug)
+                    {
+                        std::cout <<"error: "<< epdf->d_name<<std::endl;
+                        errors_logs<<"error: "<<start_path+filename+epdf->d_name<<std::endl;
+                    }
                     read_folder(start_path,filename+rename_dir(epdf->d_name)+"/");
                 }
 
@@ -159,6 +175,7 @@ int main()
         }
         else
         {
+
             ssc.check_path(path);
             ssc.read_folder(path);
         }
