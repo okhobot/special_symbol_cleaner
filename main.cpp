@@ -46,7 +46,7 @@ public:
             if(dict.find(name[i])!=std::string::npos)
                 {
                     res_name+=name[i];
-                    std::cout<<name[i]<<" "<<dict[dict.find(name[i])]<<std::endl;
+                    //std::cout<<name[i]<<" "<<dict[dict.find(name[i])]<<std::endl;
                 }
             else res_name+='-';
 
